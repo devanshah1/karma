@@ -167,13 +167,13 @@ If, during test execution, Karma does not receive any message from a browser wit
 
 **Default:**  `[]`
 
-**CLI:** `--browsers Chrome,Firefox`
+**CLI:** `--browsers Chrome,Firefox`, `--no-browsers`
 
 **Possible Values:**
 
-  * `Chrome` (launcher comes installed with Karma)
-  * `ChromeCanary` (launcher comes installed with Karma)
-  * `PhantomJS` (launcher comes installed with Karma)
+  * `Chrome` (launcher requires karma-chrome-launcher plugin)
+  * `ChromeCanary` (launcher requires karma-chrome-launcher plugin)
+  * `PhantomJS` (launcher requires karma-phantomjs-launcher plugin)
   * `Firefox` (launcher requires karma-firefox-launcher plugin)
   * `Opera` (launcher requires karma-opera-launcher plugin)
   * `IE` (launcher requires karma-ie-launcher plugin)
@@ -184,7 +184,9 @@ which is placed within this setting. Once Karma is shut down, it will shut down 
 browsers as well. You can capture any browser manually by opening the browser and visiting the URL where
 the Karma web server is listening (by default it is `http://localhost:9876/`).
 
-See [config/browsers] for more information. Additional launchers can be defined through [plugins].
+See [config/browsers] for more information. Additional launchers can be defined through [plugins]. Use the
+`--no-browsers` command line option to override the value of this setting specified in the configuration file
+with an empty list.
 
 
 ## captureTimeout
@@ -259,6 +261,15 @@ upon the completion of running the tests. Setting this to false is useful when e
 **Description:** How many browsers Karma launches in parallel.
 
 Especially on services like SauceLabs and Browserstack, it makes sense only to launch a limited amount of browsers at once, and only start more when those have finished. Using this configuration, you can specify how many browsers should be running at once at any given point in time.
+
+## crossOriginAttribute
+
+**Type:** Boolean
+
+**Default:** `true`
+
+**Description:** When true, this will append the crossorigin attribute to generated script tags, which enables better error reporting for JavaScript files served from a different origin.
+Disable this when you need to load external scripts that are served without the necessary `Access-Control-Allow-Origin` header.
 
 
 ## customContextFile
@@ -526,6 +537,17 @@ Determines the use of the Node `http` or `https` class.
 Note: Using `'https:'` requires you to specify `httpsServerOptions`.
 
 
+## httpModule
+**Type:** String
+
+**Default:** `undefined`
+
+**Description:** Module used for Karma webserver.
+
+Uses the provided module instead of node's built in `http` or `https` module. The module loaded here must exactly match the interface of node's http module. This can be useful for loading in a module like `node-http2` to allow for http2 support. 
+
+Note: if you're using this to enable `http2` you must also set the `protocol` to `https:` and specify certificates as http2 can only run of https.
+
 ## proxies
 **Type:** Object
 
@@ -596,8 +618,8 @@ Note: Just about all additional reporters in Karma (other than progress) require
 **CLI:** `--format-error ./path/to/formatFunction.js`
 
 **Arguments:**
-  
-  * `msg` - The entire assertion error and stack trace as a string. 
+
+  * `msg` - The entire assertion error and stack trace as a string.
 
 **Returns:** A new error message string.
 
